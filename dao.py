@@ -18,7 +18,7 @@ def releaseDBConnection():
 
 def insert_msg(msg_content='', msg_type='', msg_sender='', msg_from=''):
     sql = "INSERT INTO msg(content, type, sender, msg_from) VALUES (%s, %s, %s, %s)" % (
-        repr(msg_content), repr(msg_type), repr(msg_sender), repr(msg_from))
+        str(repr(msg_content)), repr(msg_type), repr(msg_sender), repr(msg_from))
     print(sql)
     try:
         # 执行sql语句

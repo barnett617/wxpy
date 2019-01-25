@@ -44,10 +44,19 @@ my wxpy robot implements of wxpy
 
 #### 解决方案
 
-解决方案采取将数据库、数据表字符集设为utf8mb4，因为需要保存emoji表情，utf8mb4是utf8的超集
+解决方案采取将`数据库`、`数据表`、`数据表字段`字符集均设为utf8mb4，因为需要保存emoji表情，utf8mb4是utf8的超集
+
+若数据库、数据表已建为utf8，需要修改数据库字符集、数据表字符集和需要存储emoji表情的字段的字符集为utf8mb4
+
+以下为修改指定字段的sql语句
+
+```SQL
+alter table msg change column `content` `content`  varchar(255) CHARACTER set 'utf8mb4'
+```
 
 ## TODO
 
 - [ ] analysis more smartly
 - [ ] deploy the project on the server with a daemon to hold it on
 - [ ] receive file message like image, audio, video etc. and save
+- [ ] 标准emoji表情无法保存，提示`1366, "Incorrect string value: '\\xF0\\x9F\\x98\\x82\\xE5\\x95...' for column 'content' at row 1"``
