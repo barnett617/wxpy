@@ -44,7 +44,7 @@ my wxpy robot implements of wxpy
 
 #### 解决方案
 
-解决方案采取`将数据库字符集设为utf8mb4`，因为需要保存emoji表情，utf8mb4是utf8的超集
+解决方案采取将数据库、数据表字符集设为utf8mb4，因为需要保存emoji表情，utf8mb4是utf8的超集
 
 ## TODO
 

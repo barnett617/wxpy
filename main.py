@@ -42,10 +42,11 @@ print(my_msg)
 # group_cm.send('嘿嘿嘿@Tom')
 
 def msgRefMe(msg):
+    ref_me = False
     for item in local_enum.keyword['about_me']:
         if (msg.find(item)):
-            return True
-        return False
+            ref_me = True
+    return ref_me
 
 # 注册监听所有消息
 @bot.register(except_self=False)

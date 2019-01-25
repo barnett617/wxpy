@@ -15,7 +15,7 @@ sql = """CREATE TABLE msg (
          sender CHAR(255),
          msg_from CHAR(255),
          PRIMARY KEY (`id`)
-         ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
+         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"""
 
 cursor.execute(sql)
 db.close()
