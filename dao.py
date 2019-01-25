@@ -5,6 +5,8 @@ db = None
 cursor = None
 
 def getDBConnection():
+    global db  # 声明db是全局变量
+    global cursor
     db = pymysql.connect(conf.db_host, conf.db_user, conf.db_pass, conf.db_database)
     cursor = db.cursor()
     cursor.execute("SELECT VERSION()")

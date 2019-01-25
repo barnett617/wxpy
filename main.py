@@ -52,10 +52,12 @@ def msgRefMe(msg):
 def just_print(msg):
     print(msg)
     send_text = ''
+    text_msg = False
     try:
         # 过滤空消息或非文本消息
         if msg.text is not None:
             send_text = msg.text
+            text_msg = True
         # 获取数据库连接
         getDBConnection()
         # 判断消息来源（个人消息 or 群聊消息）
@@ -65,18 +67,26 @@ def just_print(msg):
         else:
             # 群聊
             insert_msg(send_text, msg.type, msg.member.name, msg.sender.name)
-            if msgRefMe(msg):
-                return local_enum.my_reply['whatsup']
+
+            # 获取对象
             group_cm = ensure_one(bot.groups().search(local_enum.group['cm']))
             pika_cm = ensure_one(bot.groups().search(local_enum.group['pika']))
             yanghua = ensure_one(group_cm.search(local_enum.user['yanghua']))
             liaoze = ensure_one(group_cm.search(local_enum.user['liaoze']))
+
+            # 开始对文本进行解析处理（建立在消息是文本类型的基础上）
+            if text_msg:
+                if msgRefMe(send_text):
+                    return local_enum.my_reply['whatsup']
+
+            # 对指定成员的消息进行处理
             if msg.member.name == yanghua:
                 return local_enum.my_reply['yhcome']
             elif msg.member.name == liaoze:
                 return local_enum.my_reply['lzcome']
-    except ResponseError as e:
-        print(e.err_code, e.err_msg)  # 查看错误号和错误消息
+
+    except ResponseError as res_error:
+        print(res_error.err_code, res_error.err_msg)  # 查看错误号和错误消息
     except Exception as e:
         print('msg resolve error: ', e)
 
