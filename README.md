@@ -36,4 +36,5 @@ my wxpy robot implements of wxpy
 
 ## TODO
 
-- analysis more smartly
+- [ ] analysis more smartly
+- [ ] deploy the project on the server with a daemon to hold it on
