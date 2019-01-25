@@ -38,3 +38,4 @@ my wxpy robot implements of wxpy
 
 - [ ] analysis more smartly
 - [ ] deploy the project on the server with a daemon to hold it on
+- [ ] receive file message like image, audio, video etc. and save

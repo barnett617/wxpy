@@ -1,3 +1,7 @@
+# myfile
 conf.py
+local_enum.py
+
+# ide file
 .idea/
 __pycache__/

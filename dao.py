@@ -1,12 +1,18 @@
 import pymysql
 import conf
 
-db = pymysql.connect(conf.db_host, conf.db_user, conf.db_pass, conf.db_database)
-cursor = db.cursor()
-cursor.execute("SELECT VERSION()")
-data = cursor.fetchone()
-print("Database version : %s " % data)
+db = None
+cursor = None
 
+def getDBConnection():
+    db = pymysql.connect(conf.db_host, conf.db_user, conf.db_pass, conf.db_database)
+    cursor = db.cursor()
+    cursor.execute("SELECT VERSION()")
+    data = cursor.fetchone()
+    print("Database version : %s " % data)
+
+def releaseDBConnection():
+    db.close()
 
 def insert_msg(msg_content='', msg_type='', msg_sender='', msg_from=''):
     sql = "INSERT INTO msg(content, type, sender, msg_from) VALUES (%s, %s, %s, %s)" % (
@@ -18,8 +24,6 @@ def insert_msg(msg_content='', msg_type='', msg_sender='', msg_from=''):
         # 执行sql语句
         db.commit()
     except Exception as e:
+        getDBConnection()
         print('Reason:', e)
         db.rollback()
-
-    # 关闭数据库连接
-    # db.close()

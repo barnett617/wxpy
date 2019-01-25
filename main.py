@@ -1,6 +1,7 @@
 # coding: utf-8
 from wxpy import *
-from dao import insert_msg
+from dao import insert_msg, getDBConnection
+import local_enum
 import sys
 
 bot = Bot()
@@ -15,60 +16,69 @@ TODO:
 
 # 发送的消息文本
 
-my_msg = '我来啦，哈哈哈'
+my_msg = local_enum.my_reply['test']
+print(my_msg)
+
+# 好友操作
 
 # 获取某个好友
-friend_rouding = bot.friends().search('肉丁')[0]
+# 可通过获取数组第一个或使用ensure_one方法取数组中的唯一对象
+# friend_rouding = bot.friends().search(local_enum.user['rouding'])[0]
+# 对找到的唯一好友发送消息
+# friend_rouding.send('哈哈哈[坏笑]')
+
+# 查找的同时发送
+# bot.friends().search(local_enum.user['rouding'])[0].send('哈哈哈')
 
 # 从所有消息中检索某个人发送的内容
 # msgFromFriendTom = bot.messages.search(sender=bot.friends().search('Tom')[0])[0]
 # msgFromGroup = bot.messages.search(sender=bot.groups().search('C0deM0nkeys')[0])[0]
 
-# 查询某个好友并发送文本消息
-# bot.friends().search('肉丁')[0].send('哈哈哈')
-
-# 检索历史信息
-# bot.messages.search(sender=group_pika)
+# 群操作
 
 # 定位某个群
-group_cm = ensure_one(bot.groups().search('C0deM0nkeys'))
-# group_cm.send('什么是领域模型@Tom')
+# group_cm = ensure_one(bot.groups().search(local_enum.group['cm']))
+# 对群发消息
+# group_cm.send('嘿嘿嘿@Tom')
 
 def msgRefMe(msg):
-    if (msg.find('鑫锅') > 0 or msg.find('王鑫') > 0 or msg.find('鑫哥') > 0):
-        return True
-    return False
+    for item in local_enum.keyword['about_me']:
+        if (msg.find(item)):
+            return True
+        return False
 
 # 注册监听所有消息
 @bot.register(except_self=False)
 def just_print(msg):
     print(msg)
-    if msg.member == None:
-        # 非群聊
-        insert_msg(msg.text, msg.type, msg.sender.name, msg.sender.name)
-        # print(msg)
-    else:
-        # 群聊
-        insert_msg(msg.text, msg.type, msg.member.name, msg.sender.name)
-        # print(msg)
-        if msgRefMe(msg):
-            return '嗯？怎么了'
-        group_cm = ensure_one(bot.groups().search('C0deM0nkeys'))
-        yanghua = ensure_one(group_cm.search('杨华'))
-        liaoze = ensure_one(group_cm.search('廖泽'))
-        if msg.member == yanghua:
-            return '华仔说活了[奸笑]'
-            # return '华仔来啦'
-        elif msg.member == liaoze:
-            return '泽神说话了[奸笑]'
-
-# try:
-#     # 尝试向某个群员发送消息
-#     # group.members[3].send('Hello')
-#     bot.groups().search('C0deM0nkeys')[0].send(my_msg)
-# except ResponseError as e:
-#     # 若群员还不是好友，将抛出 ResponseError 错误
-#     print(e.err_code, e.err_msg) # 查看错误号和错误消息
+    send_text = ''
+    try:
+        # 过滤空消息或非文本消息
+        if msg.text is not None:
+            send_text = msg.text
+        # 获取数据库连接
+        getDBConnection()
+        # 判断消息来源（个人消息 or 群聊消息）
+        if msg.member == None:
+            # 非群聊
+            insert_msg(send_text, msg.type, msg.sender.name, msg.sender.name)
+        else:
+            # 群聊
+            insert_msg(send_text, msg.type, msg.member.name, msg.sender.name)
+            if msgRefMe(msg):
+                return local_enum.my_reply['whatsup']
+            group_cm = ensure_one(bot.groups().search(local_enum.group['cm']))
+            pika_cm = ensure_one(bot.groups().search(local_enum.group['pika']))
+            yanghua = ensure_one(group_cm.search(local_enum.user['yanghua']))
+            liaoze = ensure_one(group_cm.search(local_enum.user['liaoze']))
+            if msg.member.name == yanghua:
+                return local_enum.my_reply['yhcome']
+            elif msg.member.name == liaoze:
+                return local_enum.my_reply['lzcome']
+    except ResponseError as e:
+        print(e.err_code, e.err_msg)  # 查看错误号和错误消息
+    except Exception as e:
+        print('msg resolve error: ', e)
 
 # 可在堵塞线程的同时，进入 Python 命令行，方便调试，一举两得
 embed()
