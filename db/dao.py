@@ -1,5 +1,5 @@
 import pymysql
-import conf
+from secret import conf
 
 db = None
 cursor = None

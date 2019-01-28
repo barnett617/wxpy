@@ -1,5 +1,5 @@
 # myfile
-conf.py
+secret/conf.py
 local_enum.py
 
 # ide file

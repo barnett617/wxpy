@@ -1,5 +1,5 @@
 import pymysql
-import conf
+from secret import conf
 
 db = pymysql.connect(conf.db_host, conf.db_user, conf.db_pass, conf.db_database)
 cursor = db.cursor()

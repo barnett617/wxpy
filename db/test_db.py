@@ -1,5 +1,5 @@
 import pymysql
-import conf
+from secret import conf
 
 # db_host = 'xx.xx.xx.xx'
 # db_user = 'xx'

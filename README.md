@@ -58,5 +58,7 @@ alter table msg change column `content` `content`  varchar(255) CHARACTER set 'u
 
 - [ ] analysis more smartly
 - [ ] deploy the project on the server with a daemon to hold it on
-- [ ] receive file message like image, audio, video etc. and save
+- [x] receive and save picture message
+- [ ] receive and save audio message 
+- [ ] receive and save video message
 - [ ] 标准emoji表情无法保存，提示`1366, "Incorrect string value: '\\xF0\\x9F\\x98\\x82\\xE5\\x95...' for column 'content' at row 1"``

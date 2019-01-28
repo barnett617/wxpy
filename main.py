@@ -1,9 +1,9 @@
 # coding: utf-8
 from wxpy import *
-from dao import insert_msg, getDBConnection
-from util import uploadPictureToOSS
+from db.dao import insert_msg, getDBConnection
+from util.utils import uploadPictureToOSS
 from wxpy import get_wechat_logger
-import local_enum
+from util import enums
 import sys
 
 bot = Bot()
@@ -28,7 +28,7 @@ TODO:
 
 # 发送的消息文本
 
-my_msg = local_enum.my_reply['test']
+my_msg = enums.my_reply['test']
 print(my_msg)
 
 # 好友操作
@@ -55,7 +55,7 @@ print(my_msg)
 
 def msgRefMe(msg):
     ref_me = False
-    for item in local_enum.keyword['about_me']:
+    for item in enums.keyword['about_me']:
         if (msg.find(item)):
             ref_me = True
     return ref_me
@@ -88,10 +88,10 @@ def just_print(msg):
             insert_msg(send_text, msg.type, msg.member.name, msg.sender.name, msg.create_time, msg.receive_time)
 
             # 获取对象
-            group_cm = ensure_one(bot.groups().search(local_enum.group['cm']))
-            pika_cm = ensure_one(bot.groups().search(local_enum.group['pika']))
-            yanghua = ensure_one(group_cm.search(local_enum.user['yanghua']))
-            liaoze = ensure_one(group_cm.search(local_enum.user['liaoze']))
+            group_cm = ensure_one(bot.groups().search(enums.group['cm']))
+            pika_cm = ensure_one(bot.groups().search(enums.group['pika']))
+            yanghua = ensure_one(group_cm.search(enums.user['yanghua']))
+            liaoze = ensure_one(group_cm.search(enums.user['liaoze']))
 
             # 开始对文本进行解析处理（建立在消息是文本类型的基础上）
             if text_msg:
@@ -101,9 +101,9 @@ def just_print(msg):
 
             # 对指定成员的消息进行处理
             if msg.member.name == yanghua:
-                return local_enum.my_reply['yhcome']
+                return enums.my_reply['yhcome']
             elif msg.member.name == liaoze:
-                return local_enum.my_reply['lzcome']
+                return enums.my_reply['lzcome']
 
     except ResponseError as res_error:
         logger.exception('现在你又收到了什么？')
