@@ -29,6 +29,18 @@ my wxpy robot implements of wxpy
 # db_database = 'xx'
 ```
 
+## deploy
+
+0. install required package `yum install bzip2`
+1. download python on the server `wget https://repo.continuum.io/archive/Anaconda3-4.3.1-Linux-x86_64.sh`
+2. install python `sh Anaconda3-4.3.1-Linux-x86_64.sh`
+3. press `enter` to read the licence
+4. input `q` to quit the licence
+5. input `yes` to go on
+6. input `/usr/local/anaconda3` to specific install path
+7. done
+8. relogin your server and type `python` to start to use
+
 ## Warning
 
 1. if your computer sleep, the process of the robot will logout, you should manually restart the program by running `main.py`
