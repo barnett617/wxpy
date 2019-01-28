@@ -14,6 +14,8 @@ sql = """CREATE TABLE msg (
          type  CHAR(255),
          sender CHAR(255),
          msg_from CHAR(255),
+         create_time CHAR(100),
+         receive_time CHAR(100),
          PRIMARY KEY (`id`)
          ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"""
 

@@ -1,12 +1,24 @@
 # coding: utf-8
 from wxpy import *
 from dao import insert_msg, getDBConnection
+from util import uploadPictureToOSS
+from wxpy import get_wechat_logger
 import local_enum
 import sys
 
 bot = Bot()
 
 print(sys.version)
+
+# 找到需要接收日志的群 -- `ensure_one()` 用于确保找到的结果是唯一的，避免发错地方
+log_receiver = ensure_one(bot.friends().search('Tom'))
+
+# 获得一个专用 Logger
+# 当不设置 `receiver` 时，会将日志发送到随后扫码登陆的微信的"文件传输助手"
+logger = get_wechat_logger(log_receiver)
+
+# 发送警告
+logger.warning('程序启动，这是一条 WARNING 等级的日志，你收到了吗？')
 
 '''
 TODO:
@@ -64,10 +76,16 @@ def just_print(msg):
         # 判断消息来源（个人消息 or 群聊消息）
         if msg.member == None:
             # 非群聊
-            insert_msg(send_text, msg.type, msg.sender.name, msg.sender.name)
+            insert_msg(send_text, msg.type, msg.sender.name, msg.sender.name, msg.create_time, msg.receive_time)
         else:
             # 群聊
-            insert_msg(send_text, msg.type, msg.member.name, msg.sender.name)
+
+            if msg.type == 'Picture':
+                picture_obj = msg.get_file(save_path=None)
+                file_url = uploadPictureToOSS(picture_obj, msg.file_name)
+                send_text = file_url
+
+            insert_msg(send_text, msg.type, msg.member.name, msg.sender.name, msg.create_time, msg.receive_time)
 
             # 获取对象
             group_cm = ensure_one(bot.groups().search(local_enum.group['cm']))
@@ -78,7 +96,8 @@ def just_print(msg):
             # 开始对文本进行解析处理（建立在消息是文本类型的基础上）
             if text_msg:
                 if msgRefMe(send_text):
-                    return local_enum.my_reply['whatsup']
+                    # return local_enum.my_reply['whatsup']
+                    pass
 
             # 对指定成员的消息进行处理
             if msg.member.name == yanghua:
@@ -87,8 +106,10 @@ def just_print(msg):
                 return local_enum.my_reply['lzcome']
 
     except ResponseError as res_error:
+        logger.exception('现在你又收到了什么？')
         print(res_error.err_code, res_error.err_msg)  # 查看错误号和错误消息
     except Exception as e:
+        logger.exception('现在你又收到了什么？')
         print('msg resolve error: ', e)
 
 # 可在堵塞线程的同时，进入 Python 命令行，方便调试，一举两得
